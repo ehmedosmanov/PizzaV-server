@@ -43,4 +43,59 @@ const createProduct = async (req, res, next) => {
   }
 }
 
-export { getAllProducts, createProduct }
+const getByIdProduct = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const category = await Product.findById(id)
+    res.status(200).json({
+      status: true,
+      message: `Product by id ${id} found successfully`,
+      data: category
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const deleteProduct = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const deletedProduct = await Product.deleteById(id)
+    res.status(200).json({
+      status: true,
+      message: 'Product deleted successfully',
+      data: deletedProduct
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const updatedProduct = async (req, res, next) => {
+  try {
+    const { name, category_id, description, image } = req.body
+    const { id } = req.params
+    const file = req.file
+    const updateCategory = await Product.update(id, {
+      name,
+      category_id,
+      description,
+      image: file ? file.filename : null
+    })
+    res.status(200).json({
+      status: true,
+      message: 'Product updated successfully',
+      data: updateCategory
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export {
+  getAllProducts,
+  getByIdProduct,
+  createProduct,
+  deleteProduct,
+  updatedProduct
+}
